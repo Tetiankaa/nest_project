@@ -4,6 +4,7 @@ import { ETableName } from './enums/table-name.enum';
 import {  EUserRole } from './enums/user-role.enum';
 import { EAccountType } from './enums/account-type.enum';
 import { RefreshTokenEntity } from './refresh-token.entity';
+import { ActionTokenEntity } from './action-token.entity';
 
 @Entity({name: ETableName.USERS})
 export class UserEntity extends BaseModel{
@@ -30,5 +31,8 @@ export class UserEntity extends BaseModel{
   account_type: EAccountType;
 
   @OneToMany(()=>RefreshTokenEntity, (entity)=>entity.user)
-  refreshTokens?: RefreshTokenEntity[]
+  refreshTokens?: RefreshTokenEntity[];
+
+  @OneToMany(()=>ActionTokenEntity, (entity)=>entity.user)
+  actionTokens?: ActionTokenEntity[];
 }

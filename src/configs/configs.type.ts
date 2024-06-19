@@ -5,6 +5,8 @@ export type Configs = {
   jwt: JWTConfig;
   aws: AWSConfig;
   security: SecurityConfig;
+  sendGrid: SendGridConfig,
+  actionToken: ActionTokenConfig
 };
 
 export type AppConfig = {
@@ -39,4 +41,16 @@ export type AWSConfig = {
 };
 export type SecurityConfig = {
   hashPasswordRounds: number;
+  defaultManagerPassword: string;
 };
+export type SendGridConfig = {
+  api_key: string;
+  front_url: string;
+  from_email: string;
+}
+export type ActionTokenConfig = {
+  setup_manager_secret: string;
+  setup_manager_expires_in: string;
+  forgot_password_secret: string;
+  forgot_password_expires_in: string;
+}

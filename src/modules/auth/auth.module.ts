@@ -11,9 +11,10 @@ import { AuthService } from './services/auth.service';
 import { AuthCacheService } from './services/auth-cache.service';
 import { TokenService } from './services/token.service';
 import { LoggerModule } from '../logger/logger.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
-  imports: [JwtModule, RedisModule, UserModule, LoggerModule],
+  imports: [JwtModule, RedisModule, UserModule, LoggerModule, EmailModule],
   providers: [
     AuthService,
     TokenService,

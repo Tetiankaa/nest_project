@@ -37,6 +37,19 @@ export default (): Configs => ({
     bucketUrl: process.env.AWS_S3_BUCKET_URL,
   },
   security: {
-     hashPasswordRounds: parseInt(process.env.HASH_PASSWORD_ROUNDS)
+     hashPasswordRounds: parseInt(process.env.HASH_PASSWORD_ROUNDS),
+     defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD
+  },
+  sendGrid: {
+    api_key: process.env.SENDGRID_API_KEY,
+    from_email: process.env.SENDGRID_FROM_EMAIL,
+    front_url: process.env.FRONT_URL
+  },
+  actionToken: {
+    setup_manager_secret: process.env.ACTION_TOKEN_SETUP_MANAGER_SECRET,
+    setup_manager_expires_in: process.env.ACTION_TOKEN_SETUP_MANAGER_EXPIRES_IN,
+    forgot_password_secret: process.env.ACTION_TOKEN_FORGOT_PASSWORD_SECRET,
+    forgot_password_expires_in: process.env.ACTION_TOKEN_FORGOT_PASSWORD_EXPIRES_IN,
+
   }
 });

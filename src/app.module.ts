@@ -7,6 +7,7 @@ import { RepositoryModule } from './modules/repository/repository.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { RedisModule } from './modules/redis/redis.module';
     UserModule,
     LoggerModule,
     AuthModule,
-    RedisModule
+    RedisModule,
+    EmailModule
   ],
   controllers: [],
   providers: [],

@@ -4,6 +4,7 @@ import { AuthResDto } from '../dto/res/auth.res.dto';
 import { ITokenPair } from '../interfaces/token.interface';
 import { IUserData } from '../interfaces/user-data.interface';
 import { TokenPairResDto } from "../dto/res/token-pair.res.dto";
+import { PrivateUserResDto } from '../../user/dto/res/private-user-res.dto';
 
 export class AuthMapper {
   public static toResponseDTO(
@@ -15,7 +16,7 @@ export class AuthMapper {
       user: UserMapper.toPrivateResponseDTO(user),
     };
   }
-  public static toUserDataDTO(user: UserEntity, deviceId: string): IUserData {
+  public static toUserDataDTO(user: UserEntity, deviceId?: string): IUserData {
     return {
       userId: user.id,
       email: user.email,
@@ -29,6 +30,10 @@ export class AuthMapper {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     }
+  }
+
+  public static toPrivateResponseDTO(user: UserEntity): PrivateUserResDto{
+    return UserMapper.toPrivateResponseDTO(user);
   }
 
 }
