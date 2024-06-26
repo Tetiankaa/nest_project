@@ -12,7 +12,7 @@ export class RefreshTokenEntity extends BaseModel {
   @Column('text')
   deviceId: string;
 
-  @Column('text')
+  @Column()
   user_id: string;
 
   @ManyToOne(() => UserEntity, (user) => user.refreshTokens)

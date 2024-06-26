@@ -1,7 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
+  Injectable, NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -56,7 +56,7 @@ export class JwtAccessGuard implements CanActivate {
     }
     const user = await this.userRepository.findOneBy({ id: payload.userId });
     if (!user) {
-      throw new UnauthorizedException(errorMessages.USER_NOT_FOUND);
+      throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
     request.user = AuthMapper.toUserDataDTO(user, payload.deviceId);
     return true;

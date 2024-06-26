@@ -5,6 +5,7 @@ import {  EUserRole } from './enums/user-role.enum';
 import { EAccountType } from './enums/account-type.enum';
 import { RefreshTokenEntity } from './refresh-token.entity';
 import { ActionTokenEntity } from './action-token.entity';
+import { PostEntity } from './post.entity';
 
 @Entity({name: ETableName.USERS})
 export class UserEntity extends BaseModel{
@@ -12,16 +13,16 @@ export class UserEntity extends BaseModel{
   @Column({unique: true})
   email: string;
 
-  @Column()
+  @Column('text')
   password: string;
 
-  @Column()
+  @Column('text')
   phone: string;
 
-  @Column()
+  @Column('text')
   firstName: string;
 
-  @Column()
+  @Column('text')
   lastName: string;
 
   @Column({type:'enum', enum: EUserRole, default: EUserRole.BUYER})
@@ -35,4 +36,7 @@ export class UserEntity extends BaseModel{
 
   @OneToMany(()=>ActionTokenEntity, (entity)=>entity.user)
   actionTokens?: ActionTokenEntity[];
+
+  @OneToMany(()=>PostEntity, (entity)=>entity.user)
+  posts?: PostEntity[];
 }

@@ -25,7 +25,4 @@ export class UserMapper {
       phone: user.phone,
     };
   }
-  public static toPublicResponseListDTO(users: UserEntity[]): PublicUserResDto[] {
-    return users.map(UserMapper.toPublicResponseDTO);
-  }
 }

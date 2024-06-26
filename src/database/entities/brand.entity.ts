@@ -5,7 +5,7 @@ import { ModelEntity } from './model.entity';
 
 @Entity({name: ETableName.BRANDS})
 export class BrandEntity extends BaseModel {
-  @Column({ unique: true})
+  @Column({ unique: true, type: 'text'})
   name: string;
 
   @OneToMany(()=>ModelEntity, (entity)=>entity.brand)

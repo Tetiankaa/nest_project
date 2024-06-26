@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { IUserData } from '../../auth/interfaces/user-data.interface';
 import { LoggerService } from '../../logger/logger.service';
@@ -13,12 +9,25 @@ import { UserMapper } from './user.mapper';
 import { errorMessages } from '../../../common/constants/error-messages.constant';
 import { EntityManager, Repository } from 'typeorm';
 import { UserEntity } from '../../../database/entities/user.entity';
+import { PublicUserResDto } from '../dto/res/public-user-res.dto';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { RefreshTokenEntity } from '../../../database/entities/refresh-token.entity';
+import { AuthCacheService } from '../../auth/services/auth-cache.service';
+import { AuthResDto } from '../../auth/dto/res/auth.res.dto';
+import { EAccountType } from '../../../database/entities/enums/account-type.enum';
+import { AuthService } from '../../auth/services/auth.service';
+import { AuthMapper } from '../../auth/services/auth.mapper';
+import { TokenUtilityService } from '../../auth/services/token-utility.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly loggerService: LoggerService,
     private readonly userRepository: UserRepository,
+    private readonly authCacheService: AuthCacheService,
+    private readonly tokenUtilityService: TokenUtilityService,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager
   ) {}
 
   public async isEmailUniqueOrThrow(email: string, userRepository?: Repository<UserEntity>): Promise<void> {
@@ -26,67 +35,65 @@ export class UserService {
     if (user)
       throw new ConflictException(errorMessages.EMAIL_ALREADY_EXISTS);
   }
-  // public async getMe(userData: IUserData): Promise<PrivateUserResDto> {
-  //   const { userId } = userData;
-  //   const user = await this.userRepository.findOneBy({ id: userId });
-  //   return UserMapper.toResponseDTO(user);
-  // }
-  // public async getById(id: string): Promise<PrivateUserResDto> {
-  //   const user = await this.userRepository.findOneBy({ id });
-  //   if (!user) {
-  //     throw new NotFoundException('User was not found.');
-  //   }
-  //   return UserMapper.toResponseDTO(user);
-  // }
-  // public async updateMe(
-  //   userData: IUserData,
-  //   value: UpdateUserReqDto,
-  // ): Promise<PrivateUserResDto> {
-  //   const user = await this.userRepository.findOneBy({ id: userData.userId });
-  //   const updatedUser = await this.userRepository.save({ ...user, ...value });
-  //   return UserMapper.toResponseDTO(updatedUser);
-  // }
-  // public async follow(userData: IUserData, userId: string): Promise<void> {
-  //   if (userData.userId === userId) {
-  //     throw new ConflictException('You cannot follow yourself.');
-  //   }
-  //   const userToFollow = await this.userRepository.findOneBy({ id: userId });
-  //   if (!userToFollow) {
-  //     throw new NotFoundException('User not found.');
-  //   }
-  //   const existedFollow = await this.followRepository.findOneBy({
-  //     follower_id: userData.userId,
-  //     following_id: userId,
-  //   });
-  //   if (existedFollow) {
-  //     throw new ConflictException('You are already following this user.');
-  //   }
-  //   await this.followRepository.save(
-  //     this.followRepository.create({
-  //       follower_id: userData.userId,
-  //       following_id: userId,
-  //     }),
-  //   );
-  // }
-  // public async unfollow(userData: IUserData, userId: string): Promise<void> {
-  //   if (userData.userId === userId) {
-  //     throw new ConflictException('You cannot unfollow yourself.');
-  //   }
-  //   const userToUnfollow = await this.userRepository.findOneBy({ id: userId });
-  //   if (!userToUnfollow) {
-  //     throw new NotFoundException('User not found.');
-  //   }
-  //   const existedFollow = await this.followRepository.findOneBy({
-  //     follower_id: userData.userId,
-  //     following_id: userId,
-  //   });
-  //   if (!existedFollow) {
-  //     throw new ConflictException(
-  //       'You cant unfollow user you are not following',
-  //     );
-  //   }
-  //   await this.followRepository.remove(existedFollow);
-  // }
+
+  public async getById(id: string): Promise<PublicUserResDto> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(errorMessages.USER_NOT_FOUND);
+    }
+    return UserMapper.toPublicResponseDTO(user);
+  }
+  public async getMe(userData: IUserData): Promise<PrivateUserResDto> {
+    const { userId } = userData;
+    const user = await this.userRepository.findOneBy({ id: userId });
+    return UserMapper.toPrivateResponseDTO(user);
+  }
+
+  public async deleteMe(userData: IUserData): Promise<void> {
+    await this.entityManager.transaction(async (entityManager) => {
+      const userRepo = entityManager.getRepository(UserEntity);
+      const refreshTokenRepo = entityManager.getRepository(RefreshTokenEntity);
+// TODO delete all posts of a user
+      await this.authCacheService.deleteAllAccessTokens(userData.userId)
+      await refreshTokenRepo.delete({ user_id: userData.userId });
+      await userRepo.delete({ id: userData.userId });
+    });
+  }
+
+  public async updateMe(userData: IUserData, dataToUpdate: UpdateUserReqDto): Promise<PrivateUserResDto> {
+      const user = await this.userRepository.findOneBy({id: userData.userId});
+      const updatedUser = await this.userRepository.save({...user, ...dataToUpdate});
+      return UserMapper.toPrivateResponseDTO(updatedUser);
+  }
+
+  public async upgradeToPremium(userData: IUserData): Promise<AuthResDto> {
+    if (userData.accountType === EAccountType.PREMIUM) {
+      return null;
+    }
+
+   return await this.entityManager.transaction(async (entityManager) => {
+      const userRepo = entityManager.getRepository(UserEntity);
+      const refreshTokenRepo = entityManager.getRepository(RefreshTokenEntity);
+
+      const user = await userRepo.findOneBy({id: userData.userId});
+
+      const updatedUser = await userRepo.save({...user, account_type: EAccountType.PREMIUM});
+
+      await this.authCacheService.deleteAllAccessTokens(userData.userId)
+      await refreshTokenRepo.delete({ user_id: userData.userId });
+
+      const tokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId,userData.deviceId, userData.role, updatedUser.account_type,entityManager);
+
+      return AuthMapper.toResponseDTO(updatedUser, tokenPair)
+
+    });
+
+
+
+  }
+
+  //TODO make upload avatar endpoint
+
   // public async uploadAvatar(
   //   userData: IUserData,
   //   file: Express.Multer.File,

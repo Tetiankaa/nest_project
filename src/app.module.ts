@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { EmailModule } from './modules/email/email.module';
+import { CarModule } from './modules/car/car.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { EmailModule } from './modules/email/email.module';
     LoggerModule,
     AuthModule,
     RedisModule,
-    EmailModule
+    EmailModule,
+    CarModule
   ],
   controllers: [],
   providers: [],

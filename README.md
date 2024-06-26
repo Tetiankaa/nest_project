@@ -18,8 +18,10 @@ $ npm install
 Open Docker Desktop on your computer
 $ npm run start:docker:db
 
-# generate migrations
+# run already existed migration
+npm run migration:run 
 
+# generate migration for creating all other databases
 npm run migration:generate -name=createDatabases
 npm run migration:run
 

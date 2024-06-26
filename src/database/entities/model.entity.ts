@@ -7,10 +7,13 @@ import { BrandEntity } from './brand.entity';
 @Entity({name: ETableName.MODELS})
 export class ModelEntity extends BaseModel{
 
-  @Column()
+  @Column({type: 'text'})
   name: string;
+
+  @Column()
+  brand_id: string;
 
   @ManyToOne(()=>BrandEntity, (entity)=> entity.models)
   @JoinColumn({ name: 'brand_id'})
-  brand: BrandEntity;
+  brand?: BrandEntity;
 }

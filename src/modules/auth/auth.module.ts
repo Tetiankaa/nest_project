@@ -12,13 +12,15 @@ import { AuthCacheService } from './services/auth-cache.service';
 import { TokenService } from './services/token.service';
 import { LoggerModule } from '../logger/logger.module';
 import { EmailModule } from '../email/email.module';
+import { TokenUtilityService } from './services/token-utility.service';
 
 @Module({
-  imports: [JwtModule, RedisModule, UserModule, LoggerModule, EmailModule],
+  imports: [JwtModule, RedisModule, forwardRef(()=> UserModule), LoggerModule, EmailModule],
   providers: [
     AuthService,
     TokenService,
     AuthCacheService,
+    TokenUtilityService,
     {
       provide: APP_GUARD,
       useClass: JwtAccessGuard,
@@ -26,5 +28,6 @@ import { EmailModule } from '../email/email.module';
     JwtRefreshGuard,
   ],
   controllers: [AuthController],
+  exports: [AuthCacheService, AuthService, TokenUtilityService]
 })
 export class AuthModule {}

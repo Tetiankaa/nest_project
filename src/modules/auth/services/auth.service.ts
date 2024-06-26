@@ -28,7 +28,7 @@ import { EEmailType } from '../../email/enums/email-type.enum';
 import { SetPasswordReqDto } from '../dto/req/set-password.req.dto';
 import { CreateManagerReqDto } from '../dto/req/create-manager.req.dto';
 import { PrivateUserResDto } from '../../user/dto/res/private-user-res.dto';
-import { CurrentUser } from '../decorators/current-user.decorator';
+import { TokenUtilityService } from './token-utility.service';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +40,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly authCacheService: AuthCacheService,
     private readonly configService: ConfigService<Configs>,
+    private readonly tokenUtilityService: TokenUtilityService,
     private readonly emailService: EmailService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager
@@ -57,7 +58,7 @@ export class AuthService {
     const user = await userRepository.save(
       userRepository.create({ ...dto, password: hashedPassword }),
     );
-    const tokenPair = await this.generateAndSaveTokenPair(
+    const tokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(
       user.id,
       dto.deviceId,
       user.role,
@@ -90,7 +91,7 @@ export class AuthService {
         user_id: user.id,
       });
 
-    const tokenPair = await this.generateAndSaveTokenPair(
+    const tokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(
       user.id,
       dto.deviceId,
       user.role,
@@ -106,7 +107,7 @@ export class AuthService {
 
     await refreshTokenRepository.delete({deviceId: userData.deviceId, user_id: userData.userId});
 
-    const generatedTokenPair = await this.generateAndSaveTokenPair(userData.userId, userData.deviceId, userData.role, userData.accountType, entityManager)
+    const generatedTokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId, userData.deviceId, userData.role, userData.accountType, entityManager)
     return AuthMapper.toResponseTokenDTO(generatedTokenPair)
   })
   }
@@ -245,32 +246,6 @@ export class AuthService {
     })
   }
 
-  private async generateAndSaveTokenPair(
-    userId: string,
-    deviceId: string,
-    role: EUserRole,
-    accountType: EAccountType,
-    entityManager: EntityManager
-  ): Promise<ITokenPair> {
-    const tokenPair = await this.tokenService.generateTokenPair({
-      userId,
-      deviceId,
-      role,
-      accountType
-    });
-    const refreshTokenRepository = entityManager.getRepository(RefreshTokenEntity);
-    await Promise.all([
-      refreshTokenRepository.save(
-        refreshTokenRepository.create({
-          refreshToken: tokenPair.refreshToken,
-          user_id: userId,
-          deviceId,
-        }),
-      ),
-      this.authCacheService.saveToken(tokenPair.accessToken, userId, deviceId),
-    ]);
-    return tokenPair;
-  }
 
 
 }

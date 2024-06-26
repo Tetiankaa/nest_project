@@ -2,7 +2,7 @@ import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiConflictResponse,
+  ApiConflictResponse, ApiNotFoundResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -58,7 +58,7 @@ export class AuthController {
   @Post('sign-out')
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({ description: 'Unauthorized'} )
-  public async SignOut(@CurrentUser() userData: IUserData): Promise<void> {
+  public async signOut(@CurrentUser() userData: IUserData): Promise<void> {
     return await this.authService.signOut(userData);
   }
 
@@ -82,6 +82,7 @@ export class AuthController {
   @ActionTokenType(EActionTokenType.FORGOT_PASSWORD)
   @UseGuards(ActionGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
+  @ApiBearerAuth()
   public async setForgotPassword(@Body() dto: SetPasswordReqDto, @CurrentUser() userData: IUserData): Promise<void> {
     await this.authService.setForgotPassword(dto, userData);
   }
@@ -89,6 +90,7 @@ export class AuthController {
   @Post('create-manager')
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiConflictResponse({ description: 'Conflict'})
+  @ApiBearerAuth()
   public async createManagerAccount(@CurrentUser() userData: IUserData, @Body() dto: CreateManagerReqDto):Promise<PrivateUserResDto> {
     return await this.authService.createManagerAccount(userData, dto);
   }
@@ -98,6 +100,7 @@ export class AuthController {
   @ActionTokenType(EActionTokenType.SETUP_MANAGER)
   @UseGuards(ActionGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
+  @ApiBearerAuth()
   public async setManagerPassword(@CurrentUser() userData: IUserData, @Body() dto: SetPasswordReqDto ): Promise<void> {
     await this.authService.setManagerPassword(userData, dto);
   }
