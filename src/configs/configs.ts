@@ -38,7 +38,9 @@ export default (): Configs => ({
   },
   security: {
      hashPasswordRounds: parseInt(process.env.HASH_PASSWORD_ROUNDS),
-     defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD
+     defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD,
+     admin_email: process.env.ADMIN_EMAIL,
+     manager_email: process.env.MANAGER_EMAIL,
   },
   sendGrid: {
     api_key: process.env.SENDGRID_API_KEY,

@@ -12,7 +12,9 @@ export class UserMapper {
       lastName: user.lastName,
        phone: user.phone,
       role: user.role,
-      accountType: user.account_type
+      accountType: user.account_type,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
     };
   }
 
@@ -23,6 +25,7 @@ export class UserMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
+      createdAt: user.createdAt
     };
   }
 }

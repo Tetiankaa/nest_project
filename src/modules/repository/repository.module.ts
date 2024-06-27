@@ -8,6 +8,9 @@ import { ImageRepository } from './services/image.repository';
 import { PriceRepository } from './services/price.repository';
 import { PostRepository } from './services/post.repository';
 import { CurrencyRepository } from './services/currency.repository';
+import { BrandRepository } from './services/brand.repository';
+import { MissingBrandModelReportRepository } from './services/missing-brand-model-report.repository';
+import { ModelRepository } from './services/model.repository';
 
 const repositories = [
   UserRepository,
@@ -17,7 +20,9 @@ const repositories = [
   ImageRepository,
   PriceRepository,
   PostRepository,
-  CurrencyRepository
+  CurrencyRepository,
+  MissingBrandModelReportRepository,
+  ModelRepository
 ];
 @Global()
 @Module({

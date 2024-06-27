@@ -6,6 +6,7 @@ import { EAccountType } from './enums/account-type.enum';
 import { RefreshTokenEntity } from './refresh-token.entity';
 import { ActionTokenEntity } from './action-token.entity';
 import { PostEntity } from './post.entity';
+import { MissingBrandModelReportEntity } from './missing-brand-model-report.entity';
 
 @Entity({name: ETableName.USERS})
 export class UserEntity extends BaseModel{
@@ -39,4 +40,7 @@ export class UserEntity extends BaseModel{
 
   @OneToMany(()=>PostEntity, (entity)=>entity.user)
   posts?: PostEntity[];
+
+  @OneToMany(()=> MissingBrandModelReportEntity, (entity)=> entity.user)
+  missing_brand_model_reports: MissingBrandModelReportEntity[];
 }

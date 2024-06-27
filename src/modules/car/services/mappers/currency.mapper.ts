@@ -1,5 +1,5 @@
-import { CurrencyEntity } from '../../../database/entities/currency.entity';
-import { CurrencyResDto } from '../dto/res/currency.res.dto';
+import { CurrencyEntity } from '../../../../database/entities/currency.entity';
+import { CurrencyResDto } from '../../dto/res/currency.res.dto';
 
 export class CurrencyMapper {
  public static toDto(currency: CurrencyEntity): CurrencyResDto {

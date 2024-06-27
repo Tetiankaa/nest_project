@@ -42,6 +42,8 @@ export type AWSConfig = {
 export type SecurityConfig = {
   hashPasswordRounds: number;
   defaultManagerPassword: string;
+  admin_email: string;
+  manager_email: string;
 };
 export type SendGridConfig = {
   api_key: string;

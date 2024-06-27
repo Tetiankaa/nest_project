@@ -10,19 +10,19 @@ export class BaseUserResDto {
   id: string;
 
   @ApiProperty({
-    example: 'John Doe',
+    example: 'Ivan',
     description: 'The first name of the User',
   })
   public readonly firstName: string;
 
   @ApiProperty({
-    example: 'John Doe',
+    example: 'Ivanov',
     description: 'The last name of the User',
   })
   public readonly lastName: string;
 
   @ApiProperty({
-    example: 'test@.gmail.com',
+    example: 'test@gmail.com',
     description: 'The email of the User',
   })
   public readonly email: string;
@@ -44,4 +44,16 @@ export class BaseUserResDto {
     description: 'The account type of the User',
   })
   public readonly accountType: EAccountType;
+
+  @ApiProperty({
+    example: '2024-01-01T00:00:00.000Z',
+    description: 'The date and time when the user account was created.',
+  })
+  public readonly createdAt: Date;
+
+  @ApiProperty({
+    example: '2024-01-01T12:00:00.000Z',
+    description: 'The date and time when the user account was last updated.',
+  })
+  public readonly updatedAt: Date;
 }

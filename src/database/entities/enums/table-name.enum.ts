@@ -8,5 +8,6 @@ export enum ETableName {
   IMAGES = 'images',
   PRICES = 'prices',
   POSTS = 'posts',
-  CURRENCIES = 'currencies'
+  CURRENCIES = 'currencies',
+  MISSING_BRAND_MODEL_REPORTS = 'missing_brand_model_reports'
 }
