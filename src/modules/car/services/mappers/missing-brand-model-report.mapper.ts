@@ -1,13 +1,13 @@
 import { MissingBrandModelReportEntity } from '../../../../database/entities/missing-brand-model-report.entity';
 import { UserEntity } from '../../../../database/entities/user.entity';
-import { ReportMissingBrandModelResDto } from '../../dto/res/report-missing-brand-model.res.dto';
+import { MissingBrandModelReportResDto } from '../../dto/res/missing-brand-model-report.res.dto';
 import { UserMapper } from '../../../user/services/user.mapper';
 
 export class MissingBrandModelReportMapper {
   public static toDto(
     report: MissingBrandModelReportEntity,
     user: UserEntity,
-  ): ReportMissingBrandModelResDto {
+  ): MissingBrandModelReportResDto {
     return {
       id: report.id,
       brand: report.brand,
@@ -20,5 +20,10 @@ export class MissingBrandModelReportMapper {
       updatedAt: report.updatedAt,
       user: UserMapper.toPrivateResponseDTO(user)
     };
+  }
+  public static toListDto(
+    reports: MissingBrandModelReportEntity[]
+  ): MissingBrandModelReportResDto[] {
+    return reports.map(report=>this.toDto(report, report.user))
   }
 }

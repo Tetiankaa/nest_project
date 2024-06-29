@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PrivateUserResDto } from '../../../user/dto/res/private-user-res.dto';
 
-export class ReportMissingBrandModelResDto {
+export class MissingBrandModelReportResDto {
   @ApiProperty({
     example: '1a2b3c4d-5e6f-7g8h-9i0j',
     description: 'Unique identifier for the report',

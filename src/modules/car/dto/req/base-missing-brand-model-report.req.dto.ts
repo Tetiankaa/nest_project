@@ -3,7 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import { TransformHelper } from '../../../../common/helpers/transform.helper';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BaseReportMissingBrandModelReqDto {
+export class BaseMissingBrandModelReportReqDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(2, { message: 'Brand must be at least 2 characters long.' })

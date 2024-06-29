@@ -2,9 +2,9 @@ import { IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from 
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { TransformHelper } from '../../../../common/helpers/transform.helper';
-import { BaseReportMissingBrandModelReqDto } from './base-report-missing-brand-model.req.dto';
+import { BaseMissingBrandModelReportReqDto } from './base-missing-brand-model-report.req.dto';
 
-export class ReportMissingBrandModelReqDto extends PickType(BaseReportMissingBrandModelReqDto, ['model', 'brand']){
+export class MissingBrandModelReportReqDto extends PickType(BaseMissingBrandModelReportReqDto, ['model', 'brand']){
 
   @IsString()
   @IsNotEmpty()

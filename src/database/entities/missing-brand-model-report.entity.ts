@@ -26,7 +26,7 @@ export class MissingBrandModelReportEntity extends BaseModel {
   @Column()
   user_id: string;
 
-  @ManyToOne(() => UserEntity, (entity)=> entity.missing_brand_model_reports, {lazy: true})
+  @ManyToOne(() => UserEntity, (entity)=> entity.missing_brand_model_reports)
   @JoinColumn({ name: 'user_id' })
   user?: UserEntity;
 }

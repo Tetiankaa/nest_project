@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { EmailModule } from './modules/email/email.module';
 import { CarModule } from './modules/car/car.module';
+import { PaginationModule } from './modules/pagination/pagination.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { CarModule } from './modules/car/car.module';
     AuthModule,
     RedisModule,
     EmailModule,
-    CarModule
+    CarModule,
+    PaginationModule
   ],
   controllers: [],
   providers: [],
