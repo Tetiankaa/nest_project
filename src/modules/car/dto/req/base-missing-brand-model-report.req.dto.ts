@@ -12,6 +12,7 @@ export class BaseMissingBrandModelReportReqDto {
     message: 'Brand can only contain letters, numbers, spaces, hyphens, ampersands, and periods.',
   })
   @Transform(TransformHelper.trim)
+  @Transform(TransformHelper.toUpperCase)
   @Type(() => String)
   @ApiProperty({ example: 'BMW'})
   brand: string;
@@ -24,6 +25,7 @@ export class BaseMissingBrandModelReportReqDto {
     message: 'Model can only contain letters, numbers, spaces, hyphens, ampersands, and periods.',
   })
   @Transform(TransformHelper.trim)
+  @Transform(TransformHelper.toUpperCase)
   @Type(() => String)
   @ApiProperty({ example: 'X5'})
   model: string;

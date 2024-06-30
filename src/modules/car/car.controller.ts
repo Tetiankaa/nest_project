@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -65,5 +65,14 @@ export class CarController {
   @ApiBearerAuth()
   public async getReportById(@CurrentUser() userData: IUserData, @Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
     return await this.carService.getReportById(userData, id);
+  }
+
+  @Patch('reports/:id')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized'})
+  @ApiBadRequestResponse({ description: 'Bad Request'})
+  @ApiNotFoundResponse({ description: 'Not Found'})
+  @ApiBearerAuth()
+  public async toggleReportResolved(@CurrentUser() userData: IUserData, @Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
+    return await this.carService.toggleReportResolved(userData, id);
   }
 }

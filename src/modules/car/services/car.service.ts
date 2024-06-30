@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  Param,
-  ParseUUIDPipe,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CurrencyResDto } from '../dto/res/currency.res.dto';
 import { CurrencyRepository } from '../../repository/services/currency.repository';
 import { CurrencyMapper } from './mappers/currency.mapper';
@@ -15,7 +8,7 @@ import { BrandMapper } from './mappers/brand.mapper';
 import { MissingBrandModelReportReqDto } from '../dto/req/missing-brand-model-report.req.dto';
 import { IUserData } from '../../auth/interfaces/user-data.interface';
 import { MissingBrandModelReportResDto } from '../dto/res/missing-brand-model-report.res.dto';
-import { InjectDataSource, InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectEntityManager } from '@nestjs/typeorm';
 import { DataSource, EntityManager } from 'typeorm';
 import { UserEntity } from '../../../database/entities/user.entity';
 import { MissingBrandModelReportEntity } from '../../../database/entities/missing-brand-model-report.entity';
@@ -28,7 +21,6 @@ import { MissingBrandModelReportMapper } from './mappers/missing-brand-model-rep
 import { CreateBrandModelReqDto } from '../dto/req/create-brand-model.req.dto';
 import { EUserRole } from '../../../database/entities/enums/user-role.enum';
 import { ModelEntity } from '../../../database/entities/model.entity';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { MissingBrandModelReportRepository } from '../../repository/services/missing-brand-model-report.repository';
 import { PaginationService } from '../../pagination/services/pagination.service';
 import { QueryReqDto } from '../../pagination/dto/req/query.req.dto';
@@ -102,7 +94,7 @@ export class CarService {
       throw new UnauthorizedException(
         errorMessages.ACCESS_DENIED_USER_ROLE,
       );
-    }
+    } //TODO create a quard for checking admin
     return await this.entityManager.transaction(async (entityManager) => {
       const brandRepository = BrandRepository(entityManager.connection);
       const modelRepository = entityManager.getRepository(ModelEntity);
@@ -175,4 +167,33 @@ export class CarService {
 
   }
 
+  public async toggleReportResolved(userData: IUserData, reportId: string): Promise<MissingBrandModelReportResDto> {
+    if (
+      userData.role !== EUserRole.MANAGER &&
+      userData.role !== EUserRole.ADMINISTRATOR
+    ) {
+      throw new UnauthorizedException(errorMessages.ACCESS_DENIED_USER_ROLE);
+    }
+
+    const report = await this.missingBrandModelReportRepository.findOne({
+      where: { id: reportId },
+      relations: ['user'],
+    });
+
+    if (!report) {
+      throw new NotFoundException(errorMessages.REPORT_NOT_FOUND);
+    }
+    const wasResolvedBefore = report.isResolved;
+
+    report.isResolved = !report.isResolved;
+
+    await this.missingBrandModelReportRepository.save(report);
+
+    if (!wasResolvedBefore) {
+      await this.emailService.sendByEmailType(EEmailType.MISSING_BRAND_MODEL_ADDED, {
+        brand: report.brand, model: report.model, fullName: report.fullName
+      },report.email)
+    }
+    return MissingBrandModelReportMapper.toDto(report, report.user);
+  }
 }
