@@ -41,6 +41,7 @@ export default (): Configs => ({
      defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD,
      admin_email: process.env.ADMIN_EMAIL,
      manager_email: process.env.MANAGER_EMAIL,
+    max_profanity_edits: parseInt(process.env.MAX_PROFANITY_EDITS)
   },
   sendGrid: {
     api_key: process.env.SENDGRID_API_KEY,
@@ -52,6 +53,8 @@ export default (): Configs => ({
     setup_manager_expires_in: process.env.ACTION_TOKEN_SETUP_MANAGER_EXPIRES_IN,
     forgot_password_secret: process.env.ACTION_TOKEN_FORGOT_PASSWORD_SECRET,
     forgot_password_expires_in: process.env.ACTION_TOKEN_FORGOT_PASSWORD_EXPIRES_IN,
-
-  }
+  },
+   exchangeRates: {
+    api_privatbank: process.env.API_PRIVATBANK
+   }
 });

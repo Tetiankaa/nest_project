@@ -11,6 +11,7 @@ import { CurrencyRepository } from './services/currency.repository';
 import { BrandRepository } from './services/brand.repository';
 import { MissingBrandModelReportRepository } from './services/missing-brand-model-report.repository';
 import { ModelRepository } from './services/model.repository';
+import { ExchangeRateRepository } from './services/exchange-rate.repository';
 
 const repositories = [
   UserRepository,
@@ -22,7 +23,8 @@ const repositories = [
   PostRepository,
   CurrencyRepository,
   MissingBrandModelReportRepository,
-  ModelRepository
+  ModelRepository,
+  ExchangeRateRepository
 ];
 @Global()
 @Module({

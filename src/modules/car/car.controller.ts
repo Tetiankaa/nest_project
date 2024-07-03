@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -17,6 +17,8 @@ import { IUserData } from '../auth/interfaces/user-data.interface';
 import { CreateBrandModelReqDto } from './dto/req/create-brand-model.req.dto';
 import { QueryReqDto } from '../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../pagination/dto/res/pagination.res.dto';
+import { AdminOrManager } from '../auth/decorators/admin-or-manager.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('cars')
 @ApiTags('cars')
@@ -44,6 +46,8 @@ export class CarController {
   }
 
   @Post('brands')
+  @AdminOrManager()
+  @UseGuards(RolesGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiBearerAuth()
@@ -52,6 +56,8 @@ export class CarController {
   }
 
   @Get('reports')
+  @AdminOrManager()
+  @UseGuards(RolesGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiBearerAuth()
@@ -59,6 +65,8 @@ export class CarController {
     return await this.carService.getReports(userData, query);
   }
   @Get('reports/:id')
+  @AdminOrManager()
+  @UseGuards(RolesGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiNotFoundResponse({ description: 'Not Found'})
@@ -68,6 +76,8 @@ export class CarController {
   }
 
   @Patch('reports/:id')
+  @AdminOrManager()
+  @UseGuards(RolesGuard)
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiNotFoundResponse({ description: 'Not Found'})

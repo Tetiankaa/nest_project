@@ -10,6 +10,10 @@ import { RedisModule } from './modules/redis/redis.module';
 import { EmailModule } from './modules/email/email.module';
 import { CarModule } from './modules/car/car.module';
 import { PaginationModule } from './modules/pagination/pagination.module';
+import { PostModule } from './modules/post/post.module';
+import { ExchangeRateModule } from './modules/exchange-rate/exchange-rate.module';
+import { CronModule } from './modules/cron/cron.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,7 +29,10 @@ import { PaginationModule } from './modules/pagination/pagination.module';
     RedisModule,
     EmailModule,
     CarModule,
-    PaginationModule
+    PaginationModule,
+    PostModule,
+    ExchangeRateModule,
+    CronModule
   ],
   controllers: [],
   providers: [],

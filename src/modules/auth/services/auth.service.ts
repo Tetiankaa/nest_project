@@ -51,6 +51,7 @@ export class AuthService {
   public async signUp(dto: SignUpReqDto): Promise<AuthResDto> {
     return await this.entityManager.transaction(async (entityManager) => {
       const userRepository = entityManager.getRepository(UserEntity);
+      const refreshTokenRepository = entityManager.getRepository(RefreshTokenEntity);
 
        await this.userService.isEmailUniqueOrThrow(dto.email, userRepository);
       const hashedPassword = await bcrypt.hash(dto.password, this.securityConfig.hashPasswordRounds);
@@ -63,7 +64,7 @@ export class AuthService {
       dto.deviceId,
       user.role,
       user.account_type,
-      entityManager
+      refreshTokenRepository
     );
     return AuthMapper.toResponseDTO(user, tokenPair);
     })
@@ -96,7 +97,7 @@ export class AuthService {
       dto.deviceId,
       user.role,
       user.account_type,
-      entityManager
+      refreshTokenRepository
     );
     return AuthMapper.toResponseDTO(user, tokenPair);
     })
@@ -107,7 +108,7 @@ export class AuthService {
 
     await refreshTokenRepository.delete({deviceId: userData.deviceId, user_id: userData.userId});
 
-    const generatedTokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId, userData.deviceId, userData.role, userData.accountType, entityManager)
+    const generatedTokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId, userData.deviceId, userData.role, userData.accountType, refreshTokenRepository)
     return AuthMapper.toResponseTokenDTO(generatedTokenPair)
   })
   }

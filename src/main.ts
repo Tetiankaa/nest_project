@@ -8,7 +8,6 @@ import { GlobalExceptionFilter } from './common/http/global-exception.filter';
 import { LoggerService } from './modules/logger/logger.service';
 import { createValidationExceptionFactory } from './common/validation/validation-exception.factory';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);

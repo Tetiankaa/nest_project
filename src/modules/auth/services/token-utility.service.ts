@@ -4,7 +4,7 @@ import { AuthCacheService } from './auth-cache.service';
 import { EUserRole } from '../../../database/entities/enums/user-role.enum';
 import { EAccountType } from '../../../database/entities/enums/account-type.enum';
 import { ITokenPair } from '../interfaces/token.interface';
-import { EntityManager } from 'typeorm';
+import { Repository } from 'typeorm';
 import { RefreshTokenEntity } from '../../../database/entities/refresh-token.entity';
 
 
@@ -21,7 +21,7 @@ export class TokenUtilityService {
     deviceId: string,
     role: EUserRole,
     accountType: EAccountType,
-    entityManager: EntityManager
+    refreshTokenRepository: Repository<RefreshTokenEntity>
   ): Promise<ITokenPair> {
     const tokenPair = await this.tokenService.generateTokenPair({
       userId,
@@ -29,7 +29,6 @@ export class TokenUtilityService {
       role,
       accountType
     });
-    const refreshTokenRepository = entityManager.getRepository(RefreshTokenEntity);
     await Promise.all([
       refreshTokenRepository.save(
         refreshTokenRepository.create({

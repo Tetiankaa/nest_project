@@ -6,7 +6,8 @@ export type Configs = {
   aws: AWSConfig;
   security: SecurityConfig;
   sendGrid: SendGridConfig,
-  actionToken: ActionTokenConfig
+  actionToken: ActionTokenConfig,
+  exchangeRates: ExchangeRatesConfig
 };
 
 export type AppConfig = {
@@ -44,6 +45,7 @@ export type SecurityConfig = {
   defaultManagerPassword: string;
   admin_email: string;
   manager_email: string;
+  max_profanity_edits:number;
 };
 export type SendGridConfig = {
   api_key: string;
@@ -55,4 +57,7 @@ export type ActionTokenConfig = {
   setup_manager_expires_in: string;
   forgot_password_secret: string;
   forgot_password_expires_in: string;
+}
+export type ExchangeRatesConfig = {
+  api_privatbank: string;
 }

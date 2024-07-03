@@ -82,7 +82,7 @@ export class UserService {
       await this.authCacheService.deleteAllAccessTokens(userData.userId)
       await refreshTokenRepo.delete({ user_id: userData.userId });
 
-      const tokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId,userData.deviceId, userData.role, updatedUser.account_type,entityManager);
+      const tokenPair = await this.tokenUtilityService.generateAndSaveTokenPair(userData.userId,userData.deviceId, userData.role, updatedUser.account_type,refreshTokenRepo);
 
       return AuthMapper.toResponseDTO(updatedUser, tokenPair)
 

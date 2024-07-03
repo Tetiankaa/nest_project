@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as SendGrid from '@sendgrid/mail';
+import SendGrid from '@sendgrid/mail';
 import { MailDataRequired } from "@sendgrid/helpers/classes/mail";
 
 import { Configs, SendGridConfig } from '../../configs/configs.type';
@@ -17,7 +17,6 @@ export class EmailService {
               private readonly loggerService: LoggerService
               ) {
     this.sendGridConfig = this.configService.get<SendGridConfig>('sendGrid');
-    console.log(this.sendGridConfig.api_key);
     SendGrid.setApiKey(this.sendGridConfig.api_key)
   }
 

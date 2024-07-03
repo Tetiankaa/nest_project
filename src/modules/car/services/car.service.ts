@@ -87,14 +87,6 @@ export class CarService {
   }
 
   public async createBrandOrModel( userData: IUserData,  dto: CreateBrandModelReqDto): Promise<BrandResDto> {
-    if (
-      userData.role !== EUserRole.MANAGER &&
-      userData.role !== EUserRole.ADMINISTRATOR
-    ) {
-      throw new UnauthorizedException(
-        errorMessages.ACCESS_DENIED_USER_ROLE,
-      );
-    } //TODO create a quard for checking admin
     return await this.entityManager.transaction(async (entityManager) => {
       const brandRepository = BrandRepository(entityManager.connection);
       const modelRepository = entityManager.getRepository(ModelEntity);
@@ -126,14 +118,6 @@ export class CarService {
   }
 
   public async getReports(userData: IUserData, query: QueryReqDto): Promise<PaginationResDto<MissingBrandModelReportResDto>> {
-    if (
-      userData.role !== EUserRole.MANAGER &&
-      userData.role !== EUserRole.ADMINISTRATOR
-    ) {
-      throw new UnauthorizedException(
-        errorMessages.ACCESS_DENIED_USER_ROLE,
-      );
-    }
 
   const reports = await this.paginationService.paginate(this.missingBrandModelReportRepository, query,['user'])
 
@@ -148,14 +132,6 @@ export class CarService {
   }
 
   public async getReportById(userData: IUserData, reportId:  string): Promise<MissingBrandModelReportResDto> {
-    if (
-      userData.role !== EUserRole.MANAGER &&
-      userData.role !== EUserRole.ADMINISTRATOR
-    ) {
-      throw new UnauthorizedException(
-        errorMessages.ACCESS_DENIED_USER_ROLE,
-      );
-    }
     const report = await this.missingBrandModelReportRepository.findOne({
       where: { id: reportId },
       relations: ['user'],
@@ -168,13 +144,6 @@ export class CarService {
   }
 
   public async toggleReportResolved(userData: IUserData, reportId: string): Promise<MissingBrandModelReportResDto> {
-    if (
-      userData.role !== EUserRole.MANAGER &&
-      userData.role !== EUserRole.ADMINISTRATOR
-    ) {
-      throw new UnauthorizedException(errorMessages.ACCESS_DENIED_USER_ROLE);
-    }
-
     const report = await this.missingBrandModelReportRepository.findOne({
       where: { id: reportId },
       relations: ['user'],
