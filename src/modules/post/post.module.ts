@@ -7,9 +7,10 @@ import { AuthModule } from '../auth/auth.module';
 import { ProfanityService } from './services/profanity.service';
 import { PriceService } from './services/price.service';
 import { ExchangeRateModule } from '../exchange-rate/exchange-rate.module';
+import { PaginationModule } from '../pagination/pagination.module';
 
 @Module({
-  imports:[RepositoryModule, EmailModule, AuthModule, ExchangeRateModule],
+  imports:[RepositoryModule, EmailModule, AuthModule, ExchangeRateModule, PaginationModule],
   providers:[PostService, ProfanityService, PriceService],
   controllers: [PostController]
 })

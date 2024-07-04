@@ -2,6 +2,7 @@ import { MissingBrandModelReportEntity } from '../../../../database/entities/mis
 import { UserEntity } from '../../../../database/entities/user.entity';
 import { MissingBrandModelReportResDto } from '../../dto/res/missing-brand-model-report.res.dto';
 import { UserMapper } from '../../../user/services/user.mapper';
+import { PaginationResDto } from '../../../pagination/dto/res/pagination.res.dto';
 
 export class MissingBrandModelReportMapper {
   public static toDto(
@@ -22,8 +23,13 @@ export class MissingBrandModelReportMapper {
     };
   }
   public static toListDto(
-    reports: MissingBrandModelReportEntity[]
-  ): MissingBrandModelReportResDto[] {
-    return reports.map(report=>this.toDto(report, report.user))
+    result: PaginationResDto<MissingBrandModelReportEntity>
+  ): PaginationResDto<MissingBrandModelReportResDto> {
+    return {
+      data: result.data.map(report=>this.toDto(report, report.user)),
+      totalCount: result.totalCount,
+      limit: result.limit,
+      page: result.page
+    }
   }
 }

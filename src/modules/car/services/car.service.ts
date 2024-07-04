@@ -22,9 +22,10 @@ import { CreateBrandModelReqDto } from '../dto/req/create-brand-model.req.dto';
 import { EUserRole } from '../../../database/entities/enums/user-role.enum';
 import { ModelEntity } from '../../../database/entities/model.entity';
 import { MissingBrandModelReportRepository } from '../../repository/services/missing-brand-model-report.repository';
-import { PaginationService } from '../../pagination/services/pagination.service';
+import { PaginationService } from '../../pagination/pagination.service';
 import { QueryReqDto } from '../../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
+import { QueryMissingBrandModelReportReqDto } from '../dto/req/query-missing-brand-model-report.req.dto';
 
 @Injectable()
 export class CarService {
@@ -117,21 +118,21 @@ export class CarService {
 
   }
 
-  public async getReports(userData: IUserData, query: QueryReqDto): Promise<PaginationResDto<MissingBrandModelReportResDto>> {
+  public async getReports( query: QueryMissingBrandModelReportReqDto): Promise<PaginationResDto<MissingBrandModelReportResDto>> {
 
-  const reports = await this.paginationService.paginate(this.missingBrandModelReportRepository, query,['user'])
+  const reports = await this.paginationService.paginate<MissingBrandModelReportEntity>(this.missingBrandModelReportRepository, {...query,isResolved: Boolean(query.isResolved)},['user'],null,null,false)
 
-    const mappedReports = MissingBrandModelReportMapper.toListDto(reports.data);
+    const mappedReports = MissingBrandModelReportMapper.toListDto(reports);
 
     return {
-      data: mappedReports,
-      limit: reports.limit,
-      totalCount: reports.totalCount,
-      page: reports.page
+      data: mappedReports.data,
+      limit: mappedReports.limit,
+      totalCount: mappedReports.totalCount,
+      page: mappedReports.page
     }
   }
 
-  public async getReportById(userData: IUserData, reportId:  string): Promise<MissingBrandModelReportResDto> {
+  public async getReportById( reportId:  string): Promise<MissingBrandModelReportResDto> {
     const report = await this.missingBrandModelReportRepository.findOne({
       where: { id: reportId },
       relations: ['user'],
@@ -143,7 +144,7 @@ export class CarService {
 
   }
 
-  public async toggleReportResolved(userData: IUserData, reportId: string): Promise<MissingBrandModelReportResDto> {
+  public async toggleReportResolved(reportId: string): Promise<MissingBrandModelReportResDto> {
     const report = await this.missingBrandModelReportRepository.findOne({
       where: { id: reportId },
       relations: ['user'],

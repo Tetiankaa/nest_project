@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
+import { TransformHelper } from '../../../../common/helpers/transform.helper';
 
 export class BasePaginationReqDto {
   @ApiProperty({ required: false, default: 1 })
@@ -16,5 +17,11 @@ export class BasePaginationReqDto {
   @Min(1)
   @Type(()=> Number)
   limit?: number = 10;
+
+  @IsString()
+  @IsOptional()
+  @Transform(TransformHelper.toLowerCase)
+  @Transform(TransformHelper.trim)
+  search?: string;
 
 }

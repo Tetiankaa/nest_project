@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import Filter from "bad-words";
-import { BaseCreatePostReqDto } from '../dto/req/base-create-post.req.dto';
+import { CreatePostReqDto } from '../dto/req/create-post.req.dto';
 
 @Injectable()
 export class ProfanityService {
@@ -8,7 +8,7 @@ export class ProfanityService {
   constructor() {
     this.filter = new Filter();
   }
-  public checkForProfanity(car: Partial<BaseCreatePostReqDto>): boolean {
+  public checkForProfanity(car: Partial<CreatePostReqDto>): boolean {
     const fieldsToCheck = [
       car.description,
       car.model,

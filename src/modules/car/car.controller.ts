@@ -19,6 +19,7 @@ import { QueryReqDto } from '../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../pagination/dto/res/pagination.res.dto';
 import { AdminOrManager } from '../auth/decorators/admin-or-manager.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { QueryMissingBrandModelReportReqDto } from './dto/req/query-missing-brand-model-report.req.dto';
 
 @Controller('cars')
 @ApiTags('cars')
@@ -61,8 +62,8 @@ export class CarController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized'})
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiBearerAuth()
-  public async getReports(@CurrentUser() userData: IUserData, @Query() query: QueryReqDto): Promise<PaginationResDto<MissingBrandModelReportResDto>> {
-    return await this.carService.getReports(userData, query);
+  public async getReports( @Query() query: QueryMissingBrandModelReportReqDto): Promise<PaginationResDto<MissingBrandModelReportResDto>> {
+    return await this.carService.getReports(query);
   }
   @Get('reports/:id')
   @AdminOrManager()
@@ -71,8 +72,8 @@ export class CarController {
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiNotFoundResponse({ description: 'Not Found'})
   @ApiBearerAuth()
-  public async getReportById(@CurrentUser() userData: IUserData, @Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
-    return await this.carService.getReportById(userData, id);
+  public async getReportById(@Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
+    return await this.carService.getReportById(id);
   }
 
   @Patch('reports/:id')
@@ -82,7 +83,7 @@ export class CarController {
   @ApiBadRequestResponse({ description: 'Bad Request'})
   @ApiNotFoundResponse({ description: 'Not Found'})
   @ApiBearerAuth()
-  public async toggleReportResolved(@CurrentUser() userData: IUserData, @Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
-    return await this.carService.toggleReportResolved(userData, id);
+  public async toggleReportResolved(@Param('id', ParseUUIDPipe) id:  string): Promise<MissingBrandModelReportResDto> {
+    return await this.carService.toggleReportResolved( id);
   }
 }
