@@ -1,10 +1,10 @@
 import { UserEntity } from '../../../database/entities/user.entity';
+import { PrivateUserResDto } from '../../user/dto/res/private-user-res.dto';
 import { UserMapper } from '../../user/services/user.mapper';
 import { AuthResDto } from '../dto/res/auth.res.dto';
+import { TokenPairResDto } from '../dto/res/token-pair.res.dto';
 import { ITokenPair } from '../interfaces/token.interface';
 import { IUserData } from '../interfaces/user-data.interface';
-import { TokenPairResDto } from "../dto/res/token-pair.res.dto";
-import { PrivateUserResDto } from '../../user/dto/res/private-user-res.dto';
 
 export class AuthMapper {
   public static toResponseDTO(
@@ -23,17 +23,17 @@ export class AuthMapper {
       role: user.role,
       accountType: user.account_type,
       deviceId,
+      dealershipId: user.dealership_id ? user.dealership_id : undefined,
     };
   }
   public static toResponseTokenDTO(tokens: ITokenPair): TokenPairResDto {
     return {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-    }
+    };
   }
 
-  public static toPrivateResponseDTO(user: UserEntity): PrivateUserResDto{
+  public static toPrivateResponseDTO(user: UserEntity): PrivateUserResDto {
     return UserMapper.toPrivateResponseDTO(user);
   }
-
 }

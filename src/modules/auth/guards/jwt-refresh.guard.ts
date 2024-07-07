@@ -5,13 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { errorMessages } from '../../../common/constants/error-messages.constant';
 import { RefreshTokenRepository } from '../../repository/services/refresh-token.repository';
 import { UserRepository } from '../../repository/services/user.repository';
+import { authConstant } from '../constants/auth.constant';
 import { TokenTypeEnum } from '../enums/token-type.enum';
 import { AuthMapper } from '../services/auth.mapper';
 import { TokenService } from '../services/token.service';
-import { authConstant } from '../../../common/constants/auth.constant';
-import { errorMessages } from '../../../common/constants/error-messages.constant';
 
 @Injectable()
 export class JwtRefreshGuard implements CanActivate {
@@ -23,7 +23,9 @@ export class JwtRefreshGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const refreshToken = req.get(authConstant.AUTHORIZATION_HEADER)?.split(authConstant.BEARER_PREFIX)[1];
+    const refreshToken = req
+      .get(authConstant.AUTHORIZATION_HEADER)
+      ?.split(authConstant.BEARER_PREFIX)[1];
     if (!refreshToken) {
       throw new UnauthorizedException(errorMessages.NO_TOKEN_PROVIDED);
     }
@@ -35,8 +37,9 @@ export class JwtRefreshGuard implements CanActivate {
     if (!payload) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
-    const isTokenExist =
-      await this.refreshTokenRepository.isTokenExist(refreshToken);
+    const isTokenExist = await this.refreshTokenRepository.exists({
+      where: { refreshToken },
+    });
 
     if (!isTokenExist) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);

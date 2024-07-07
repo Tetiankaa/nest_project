@@ -1,9 +1,10 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { BasePostResDto } from './base-post.res.dto';
 import { IsOptional } from 'class-validator';
-import { TokenPairResDto } from '../../../auth/dto/res/token-pair.res.dto';
 
-export class PrivatePostResDto extends PickType(BasePostResDto,[
+import { TokenPairResDto } from '../../../auth/dto/res/token-pair.res.dto';
+import { BasePostResDto } from './base-post.res.dto';
+
+export class PrivatePostResDto extends PickType(BasePostResDto, [
   'id',
   'createdAt',
   'updatedAt',
@@ -11,7 +12,7 @@ export class PrivatePostResDto extends PickType(BasePostResDto,[
   'profanityEdits',
   'isDeleted',
   'car',
-  'user'
+  'user',
 ]) {
   @ApiProperty({
     example: {

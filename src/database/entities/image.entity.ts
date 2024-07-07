@@ -1,18 +1,18 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
+import { CarEntity } from './car.entity';
 import { ETableName } from './enums/table-name.enum';
 import { BaseModel } from './models/base.model';
-import { CarEntity } from './car.entity';
 
-@Entity({name: ETableName.IMAGES})
+@Entity({ name: ETableName.IMAGES })
 export class ImageEntity extends BaseModel {
-
-  @Column({nullable: true})
+  @Column()
   name: string;
 
   @Column()
   car_id: string;
 
-  @ManyToOne(()=> CarEntity,(entity)=>entity.images)
-  @JoinColumn({ name: 'car_id'})
+  @ManyToOne(() => CarEntity, (entity) => entity.images)
+  @JoinColumn({ name: 'car_id' })
   car?: CarEntity;
 }

@@ -1,22 +1,38 @@
-import { PriceEntity } from '../../../../database/entities/price.entity';
-import { PriceResDto } from '../../../post/dto/res/price.res.dto';
-import e from 'express';
 import { ECurrency } from '../../../../database/entities/enums/currency.enum';
+import { ExchangeRateEntity } from '../../../../database/entities/exchange-rate.entity';
+import { PriceEntity } from '../../../../database/entities/price.entity';
+import { BaseExchangeRateResDto } from '../../../exchange-rate/dto/res/base-exchange-rate.res.dto';
+import { PriceResDto } from '../../dto/res/price.res.dto';
 
 export class PriceMapper {
-  public static toDto(priceEntity: PriceEntity): PriceResDto[] {
-    const prices: PriceResDto[] = [];
+  public static toDto(
+    priceEntity: PriceEntity,
+    rates?: { usd: ExchangeRateEntity; eur: ExchangeRateEntity },
+  ): PriceResDto[] {
+    return [
+      {
+        currency: ECurrency.EUR,
+        value: priceEntity.eur,
+        exchangeRateEUR: rates ? this.exchangeRateToDto(rates.eur) : undefined,
+      },
+      {
+        currency: ECurrency.USD,
+        value: priceEntity.usd,
+        exchangeRateUSD: rates ? this.exchangeRateToDto(rates.usd) : undefined,
+      },
+      {
+        currency: ECurrency.UAH,
+        value: priceEntity.uah,
+      },
+    ];
+  }
 
-    if (priceEntity.eur) {
-      prices.push({ value: priceEntity.eur, currency: ECurrency.EUR });
-    }
-    if (priceEntity.usd) {
-      prices.push({ value: priceEntity.usd, currency: ECurrency.USD });
-    }
-    if (priceEntity.uah) {
-      prices.push({ value: priceEntity.uah, currency: ECurrency.UAH });
-    }
-
-    return prices;
+  public static exchangeRateToDto(
+    rate: ExchangeRateEntity,
+  ): BaseExchangeRateResDto {
+    return {
+      sale: rate.sale,
+      buy: rate.buy,
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { BrandEntity } from '../../../../database/entities/brand.entity';
-import { ModelMapper } from './model.mapper';
 import { BrandResDto } from '../../dto/res/brand.res.dto';
+import { ModelMapper } from './model.mapper';
 
 export class BrandMapper {
   public static toDto(brand: BrandEntity): BrandResDto {
@@ -12,6 +12,6 @@ export class BrandMapper {
   }
 
   public static toListDto(brands: BrandEntity[]): BrandResDto[] {
-    return brands.map(brand => this.toDto(brand));
+    return brands.map((brand) => this.toDto(brand));
   }
 }

@@ -1,14 +1,17 @@
-import { CronService } from './cron.service';
-import { ExchangeRateModule } from '../exchange-rate/exchange-rate.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { Module } from '@nestjs/common';
-import { LoggerModule } from '../logger/logger.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
+import { ExchangeRateModule } from '../exchange-rate/exchange-rate.module';
+import { PostModule } from '../post/post.module';
+import { RepositoryModule } from '../repository/repository.module';
+import { CronService } from './services/cron.service';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     ExchangeRateModule,
-    LoggerModule
+    RepositoryModule,
+    PostModule,
   ],
   providers: [CronService],
 })

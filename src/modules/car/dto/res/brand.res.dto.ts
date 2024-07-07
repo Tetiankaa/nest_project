@@ -1,5 +1,6 @@
-import { ModelResDto } from './model.res.dto';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { ModelResDto } from './model.res.dto';
 
 export class BrandResDto {
   @ApiProperty({

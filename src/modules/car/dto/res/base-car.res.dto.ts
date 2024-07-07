@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { ECurrency } from '../../../../database/entities/enums/currency.enum';
-import { PriceResDto } from '../../../post/dto/res/price.res.dto';
+import { ImageResDto } from './image.res.dto';
+import { PriceResDto } from './price.res.dto';
 
 export class BaseCarResDto {
   @ApiProperty({
@@ -76,4 +78,9 @@ export class BaseCarResDto {
   })
   prices: PriceResDto[];
 
+  @ApiProperty({
+    type: [ImageResDto],
+    description: 'List of images for the car',
+  })
+  images: ImageResDto[];
 }

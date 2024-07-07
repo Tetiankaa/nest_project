@@ -1,8 +1,8 @@
 import { MissingBrandModelReportEntity } from '../../../../database/entities/missing-brand-model-report.entity';
 import { UserEntity } from '../../../../database/entities/user.entity';
-import { MissingBrandModelReportResDto } from '../../dto/res/missing-brand-model-report.res.dto';
-import { UserMapper } from '../../../user/services/user.mapper';
 import { PaginationResDto } from '../../../pagination/dto/res/pagination.res.dto';
+import { UserMapper } from '../../../user/services/user.mapper';
+import { MissingBrandModelReportResDto } from '../../dto/res/missing-brand-model-report.res.dto';
 
 export class MissingBrandModelReportMapper {
   public static toDto(
@@ -19,17 +19,17 @@ export class MissingBrandModelReportMapper {
       isResolved: report.isResolved,
       createdAt: report.createdAt,
       updatedAt: report.updatedAt,
-      user: UserMapper.toPrivateResponseDTO(user)
+      user: UserMapper.toPrivateResponseDTO(user),
     };
   }
   public static toListDto(
-    result: PaginationResDto<MissingBrandModelReportEntity>
+    result: PaginationResDto<MissingBrandModelReportEntity>,
   ): PaginationResDto<MissingBrandModelReportResDto> {
     return {
-      data: result.data.map(report=>this.toDto(report, report.user)),
+      data: result.data.map((report) => this.toDto(report, report.user)),
       totalCount: result.totalCount,
       limit: result.limit,
-      page: result.page
-    }
+      page: result.page,
+    };
   }
 }

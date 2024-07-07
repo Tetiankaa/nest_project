@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { EmailService } from './email.service';
-import { LoggerModule } from '../logger/logger.module';
+
+import { EmailService } from './services/email.service';
 
 @Module({
-  imports: [LoggerModule],
-  providers:[EmailService],
-  exports:[EmailService]
+  imports: [],
+  providers: [EmailService],
+  exports: [EmailService],
 })
-
 export class EmailModule {}

@@ -1,8 +1,8 @@
-import { Global, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { Configs, JWTConfig } from '../../../configs/configs.type';
-import { RedisService } from '../../redis/redis.service';
+import { RedisService } from '../../redis/services/redis.service';
 
 @Injectable()
 export class AuthCacheService {
@@ -23,8 +23,8 @@ export class AuthCacheService {
     const commands: [string, ...any[]][] = [
       ['del', key],
       ['sadd', key, token],
-      ['expire',key, this.jwtConfig.access_expires_in]
-    ]
+      ['expire', key, this.jwtConfig.access_expires_in],
+    ];
 
     await this.redisService.execMulti(commands);
   }
@@ -33,9 +33,7 @@ export class AuthCacheService {
     deviceId: string,
   ): Promise<void> {
     const key = this.getKey(userId, deviceId);
-    const commands: [string, ...any[]][] = [
-      ['del', key],
-    ]
+    const commands: [string, ...any[]][] = [['del', key]];
 
     await this.redisService.execMulti(commands);
   }
@@ -55,8 +53,9 @@ export class AuthCacheService {
     do {
       const [nextCursor, keys] = await this.redisService.scan(cursor, pattern);
       if (keys.length > 0) {
-        const commands: [string, ...any[]][] = keys.map((key) => ['del', key]);
-        await this.redisService.execMulti(commands);
+        const pipeline = this.redisService.createPipeline();
+        keys.forEach((key) => pipeline.del(key));
+        await pipeline.exec();
       }
       cursor = nextCursor;
     } while (cursor !== '0');

@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 
+import { EmailModule } from '../email/email.module';
 import { RedisModule } from '../redis/redis.module';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
@@ -10,12 +11,10 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { AuthService } from './services/auth.service';
 import { AuthCacheService } from './services/auth-cache.service';
 import { TokenService } from './services/token.service';
-import { LoggerModule } from '../logger/logger.module';
-import { EmailModule } from '../email/email.module';
 import { TokenUtilityService } from './services/token-utility.service';
 
 @Module({
-  imports: [JwtModule, RedisModule, forwardRef(()=> UserModule), LoggerModule, EmailModule],
+  imports: [JwtModule, RedisModule, forwardRef(() => UserModule), EmailModule],
   providers: [
     AuthService,
     TokenService,
@@ -28,6 +27,6 @@ import { TokenUtilityService } from './services/token-utility.service';
     JwtRefreshGuard,
   ],
   controllers: [AuthController],
-  exports: [AuthCacheService, AuthService, TokenUtilityService]
+  exports: [AuthCacheService, AuthService, TokenUtilityService],
 })
 export class AuthModule {}

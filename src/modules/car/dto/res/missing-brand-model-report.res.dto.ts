@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { PrivateUserResDto } from '../../../user/dto/res/private-user-res.dto';
 
 export class MissingBrandModelReportResDto {
@@ -35,20 +36,20 @@ export class MissingBrandModelReportResDto {
   @ApiProperty({
     example: 'Ivan Ivanov',
     description: 'Full name of the user who reported',
-    required: false
+    required: false,
   })
   public readonly fullName?: string;
 
   @ApiProperty({
     example: 'The brand and model are missing from the list.',
     description: 'Additional notes provided by the user',
-    required: false
+    required: false,
   })
   public readonly notes?: string;
 
   @ApiProperty({
     example: false,
-    description: 'Whether the report has been resolved or not'
+    description: 'Whether the report has been resolved or not',
   })
   public readonly isResolved: boolean;
 

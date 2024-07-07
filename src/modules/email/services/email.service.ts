@@ -1,23 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { MailDataRequired } from '@sendgrid/helpers/classes/mail';
 import SendGrid from '@sendgrid/mail';
-import { MailDataRequired } from "@sendgrid/helpers/classes/mail";
 
-import { Configs, SendGridConfig } from '../../configs/configs.type';
-import { LoggerService } from '../logger/logger.service';
-import { EEmailType } from './enums/email-type.enum';
-import { EmailPayloadType } from './types/email-payload.type';
-import { emailTemplateConstants } from './constants/email-template.constants';
+import { Configs, SendGridConfig } from '../../../configs/configs.type';
+import { LoggerService } from '../../logger/services/logger.service';
+import { emailTemplateConstants } from '../constants/email-template.constants';
+import { EEmailType } from '../enums/email-type.enum';
+import { EmailPayloadType } from '../types/email-payload.type';
 
 @Injectable()
 export class EmailService {
   private readonly sendGridConfig: SendGridConfig;
 
-  constructor(private readonly configService: ConfigService<Configs>,
-              private readonly loggerService: LoggerService
-              ) {
+  constructor(
+    private readonly configService: ConfigService<Configs>,
+    private readonly loggerService: LoggerService,
+  ) {
     this.sendGridConfig = this.configService.get<SendGridConfig>('sendGrid');
-    SendGrid.setApiKey(this.sendGridConfig.api_key)
+    SendGrid.setApiKey(this.sendGridConfig.api_key);
   }
 
   public async sendByEmailType<T extends EEmailType>(
@@ -34,14 +35,14 @@ export class EmailService {
         dynamicTemplateData,
       });
     } catch (e) {
-      this.loggerService.error(e.response ? e.response.body.errors : e.message)
+      this.loggerService.error(e.response ? e.response.body.errors : e.message);
     }
   }
   private async send(email: MailDataRequired): Promise<void> {
     try {
       await SendGrid.send(email);
     } catch (e) {
-      this.loggerService.error(e.response ? e.response.body.errors : e.message)
+      this.loggerService.error(e.response ? e.response.body.errors : e.message);
     }
   }
 }

@@ -1,12 +1,12 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { PickType } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 import { BaseUserReqDto } from './base-user-req.dto';
-import { IsOptional} from 'class-validator';
 
 export class UpdateUserReqDtoBase extends PickType(BaseUserReqDto, [
   'phone',
   'firstName',
-  'lastName'
+  'lastName',
 ]) {}
 
 export class UpdateUserReqDto extends UpdateUserReqDtoBase {
@@ -16,4 +16,3 @@ export class UpdateUserReqDto extends UpdateUserReqDtoBase {
   @IsOptional()
   phone: string;
 }
-

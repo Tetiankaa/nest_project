@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import Filter from "bad-words";
+import Filter from 'bad-words';
+
 import { CreatePostReqDto } from '../dto/req/create-post.req.dto';
 
 @Injectable()

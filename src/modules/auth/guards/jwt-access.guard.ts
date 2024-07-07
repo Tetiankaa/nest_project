@@ -1,19 +1,19 @@
 import {
   CanActivate,
   ExecutionContext,
-  Injectable, NotFoundException,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+import { errorMessages } from '../../../common/constants/error-messages.constant';
 import { UserRepository } from '../../repository/services/user.repository';
+import { authConstant } from '../constants/auth.constant';
 import { SKIP_AUTH } from '../constants/constants';
 import { TokenTypeEnum } from '../enums/token-type.enum';
 import { AuthMapper } from '../services/auth.mapper';
 import { AuthCacheService } from '../services/auth-cache.service';
 import { TokenService } from '../services/token.service';
-import { authConstant } from '../../../common/constants/auth.constant';
-import { errorMessages } from '../../../common/constants/error-messages.constant';
 
 @Injectable()
 export class JwtAccessGuard implements CanActivate {
@@ -32,7 +32,10 @@ export class JwtAccessGuard implements CanActivate {
     if (skipAuth) return true;
 
     const request = context.switchToHttp().getRequest();
-    const accessToken = request.get(authConstant.AUTHORIZATION_HEADER)?.split(authConstant.BEARER_PREFIX)[1];
+    const accessToken = request
+      .get(authConstant.AUTHORIZATION_HEADER)
+      ?.split(authConstant.BEARER_PREFIX)[1];
+
     if (!accessToken) {
       throw new UnauthorizedException(errorMessages.NO_TOKEN_PROVIDED);
     }
@@ -46,12 +49,12 @@ export class JwtAccessGuard implements CanActivate {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
 
-    const findTokenInRedis = this.authCacheService.isAccessTokenExist(
+    const isTokenExists = this.authCacheService.isAccessTokenExist(
       accessToken,
       payload.userId,
       payload.deviceId,
     );
-    if (!findTokenInRedis) {
+    if (!isTokenExists) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
     const user = await this.userRepository.findOneBy({ id: payload.userId });

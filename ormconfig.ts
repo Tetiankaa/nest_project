@@ -1,14 +1,14 @@
 import * as path from 'node:path';
+import * as process from 'node:process';
 
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 
-import getter from './src/configs/configs'
-import * as process from 'node:process';
+import getter from './src/configs/configs';
 
 dotenv.config({ path: './environments/local.env' });
 const databaseConfig = getter().database;
-console.log('datasource', databaseConfig);
+
 export default new DataSource({
   type: 'postgres',
   host: databaseConfig.host,

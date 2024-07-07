@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsEnum, IsInt, IsOptional } from 'class-validator';
-import { BasePaginationReqDto } from './base-pagination.req.dto';
-import { EOrder } from '../../enums/order.enum';
-import { EPostOrderBy } from '../../enums/post-order.enum';
 import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator';
+
 import { TransformHelper } from '../../../../common/helpers/transform.helper';
+import { EOrder } from '../../models/enums/order.enum';
+import { EPostOrderBy } from '../../models/enums/post-order.enum';
+import { BasePaginationReqDto } from './base-pagination.req.dto';
 
 export class QueryReqDto extends BasePaginationReqDto {
   @ApiProperty({ required: false })
@@ -32,6 +33,6 @@ export class QueryReqDto extends BasePaginationReqDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsInt()
-  @Transform(()=> Number)
+  @Type(() => Number)
   profanityEdits?: number;
 }

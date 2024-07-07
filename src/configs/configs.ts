@@ -1,5 +1,7 @@
 import * as process from 'node:process';
-import * as dotenv from "dotenv";
+
+import * as dotenv from 'dotenv';
+
 import { Configs } from './configs.type';
 
 const environment = process.env.APP_ENVIRONMENT || 'local';
@@ -37,24 +39,35 @@ export default (): Configs => ({
     bucketUrl: process.env.AWS_S3_BUCKET_URL,
   },
   security: {
-     hashPasswordRounds: parseInt(process.env.HASH_PASSWORD_ROUNDS),
-     defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD,
-     admin_email: process.env.ADMIN_EMAIL,
-     manager_email: process.env.MANAGER_EMAIL,
-    max_profanity_edits: parseInt(process.env.MAX_PROFANITY_EDITS)
+    hashPasswordRounds: parseInt(process.env.HASH_PASSWORD_ROUNDS),
+    defaultManagerPassword: process.env.DEFAULT_MANAGER_PASSWORD,
+    admin_email: process.env.ADMIN_EMAIL,
+    manager_email: process.env.MANAGER_EMAIL,
+    max_profanity_edits: parseInt(process.env.MAX_PROFANITY_EDITS),
+    max_upload_images: parseInt(process.env.MAX_UPLOAD_IMAGES),
+    defaultDealershipWorkerPassword:
+      process.env.DEFAULT_DEALERSHIP_WORKER_PASSWORD,
   },
   sendGrid: {
     api_key: process.env.SENDGRID_API_KEY,
     from_email: process.env.SENDGRID_FROM_EMAIL,
-    front_url: process.env.FRONT_URL
+    front_url: process.env.FRONT_URL,
   },
   actionToken: {
     setup_manager_secret: process.env.ACTION_TOKEN_SETUP_MANAGER_SECRET,
     setup_manager_expires_in: process.env.ACTION_TOKEN_SETUP_MANAGER_EXPIRES_IN,
     forgot_password_secret: process.env.ACTION_TOKEN_FORGOT_PASSWORD_SECRET,
-    forgot_password_expires_in: process.env.ACTION_TOKEN_FORGOT_PASSWORD_EXPIRES_IN,
+    forgot_password_expires_in:
+      process.env.ACTION_TOKEN_FORGOT_PASSWORD_EXPIRES_IN,
+    setup_dealership_worker_secret:
+      process.env.ACTION_TOKEN_SETUP_DEALERSHIP_WORKER_SECRET,
+    setup_dealership_worker_expires_in:
+      process.env.ACTION_TOKEN_SETUP_DEALERSHIP_WORKER_EXPIRES_IN,
   },
-   exchangeRates: {
-    api_privatbank: process.env.API_PRIVATBANK
-   }
+  exchangeRates: {
+    api_privatbank: process.env.API_PRIVATBANK,
+  },
+  operations: {
+    batch_size: parseInt(process.env.BATCH_SIZE),
+  },
 });

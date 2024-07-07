@@ -1,4 +1,6 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+
+import { PublicUserResDto } from '../../../user/dto/res/public-user-res.dto';
 import { BasePostResDto } from './base-post.res.dto';
 
 export class PublicPostResDto extends PickType(BasePostResDto, [
@@ -6,5 +8,11 @@ export class PublicPostResDto extends PickType(BasePostResDto, [
   'createdAt',
   'updatedAt',
   'car',
-  'user'
-]) {}
+  'user',
+]) {
+  @ApiProperty({
+    description: 'The user who created the post.',
+    type: PublicUserResDto,
+  })
+  public readonly user: PublicUserResDto;
+}

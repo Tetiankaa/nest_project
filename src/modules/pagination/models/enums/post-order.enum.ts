@@ -1,3 +1,3 @@
 export enum EPostOrderBy {
-  UPDATED_AT = "updatedAt",
+  UPDATED_AT = 'updatedAt',
 }

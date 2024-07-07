@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, FindOptions, FindOptionsWhere, FindManyOptions, EntityTarget } from 'typeorm';
-import { PaginationResDto } from './dto/res/pagination.res.dto';
-import { QueryReqDto } from './dto/req/query.req.dto';
-import { EPostStatus } from '../../database/entities/enums/post-status.enum';
+import { Repository } from 'typeorm';
+
+import { EPostStatus } from '../../../database/entities/enums/post-status.enum';
+import { QueryReqDto } from '../dto/req/query.req.dto';
+import { PaginationResDto } from '../dto/res/pagination.res.dto';
+import { PostEntity } from '../../../database/entities/post.entity';
+import { EntityType } from '../models/types/entity-type';
 
 @Injectable()
 export class PaginationService {
-
   public async paginate<T>(
     repository: Repository<T>,
     paginationDto: QueryReqDto,
@@ -15,16 +17,25 @@ export class PaginationService {
     status?: EPostStatus,
     applyDefaultPostFilter: boolean = true,
   ): Promise<PaginationResDto<T>> {
-    const { page, limit, isResolved,  isDeleted,order, orderBy, profanityEdits, search } = paginationDto;
+    const {
+      page,
+      limit,
+      isResolved,
+      isDeleted,
+      order,
+      orderBy,
+      profanityEdits,
+      search,
+    } = paginationDto;
 
     const qb = repository.createQueryBuilder('entity');
 
     if (relations.length) {
-      relations.forEach(relation => {
+      relations.forEach((relation) => {
         qb.leftJoinAndSelect(`entity.${relation}`, relation);
         if (relation === 'car') {
           qb.leftJoinAndSelect(`car.price`, 'car_price');
-
+          qb.leftJoinAndSelect(`car.images`, 'car_images');
         }
       });
     }
@@ -35,17 +46,25 @@ export class PaginationService {
 
     if (status) qb.andWhere('entity.status = :status', { status });
     if (userId) qb.andWhere('user.id = :userId', { userId });
-    if ('isResolved' in paginationDto) qb.andWhere('entity.isResolved = :isResolved', { isResolved });
-    if ('isDeleted' in paginationDto) qb.andWhere('entity.isDeleted = :isDeleted', { isDeleted });
-    if (profanityEdits) qb.andWhere('entity.profanityEdits = :profanityEdits', { profanityEdits });
+    if ('isResolved' in paginationDto)
+      qb.andWhere('entity.isResolved = :isResolved', { isResolved });
+    if ('isDeleted' in paginationDto)
+      qb.andWhere('entity.isDeleted = :isDeleted', { isDeleted });
+    if (profanityEdits)
+      qb.andWhere('entity.profanityEdits = :profanityEdits', {
+        profanityEdits,
+      });
 
     if (search) {
-      const { condition, parameters} = this.getSearchCondition(search,repository.target as any);
+      const { condition, parameters } = this.getSearchCondition(
+        search,
+        repository.target as any,
+      );
       qb.andWhere(condition, parameters);
     }
 
     if (orderBy) {
-      qb.orderBy(`entity.${orderBy}`, order );
+      qb.orderBy(`entity.${orderBy}`, order);
     }
 
     const [data, totalCount] = await qb
@@ -57,10 +76,13 @@ export class PaginationService {
       data,
       page,
       limit,
-      totalCount
-    }
+      totalCount,
+    };
   }
-  private getSearchCondition(search: string, entityType: Function): { condition: string, parameters: any } {
+  private getSearchCondition(
+    search: string,
+    entityType: EntityType,
+  ): { condition: string; parameters: any } {
     const searchTerm = `%${search.toLowerCase()}%`;
 
     if (entityType.name === 'PostEntity') {
@@ -76,7 +98,7 @@ export class PaginationService {
           LOWER(car.model),
           LOWER(car.color)
         ) LIKE :search`,
-        parameters: { search: searchTerm }
+        parameters: { search: searchTerm },
       };
     } else if (entityType.name === 'MissingBrandModelReportEntity') {
       return {
@@ -87,7 +109,7 @@ export class PaginationService {
           LOWER(entity.brand),
           LOWER(entity.model)
         ) LIKE :search`,
-        parameters: { search: searchTerm }
+        parameters: { search: searchTerm },
       };
     }
 

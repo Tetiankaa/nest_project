@@ -1,25 +1,25 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ECurrency } from '../../../database/entities/enums/currency.enum';
-import { IExchangeRate } from '../../exchange-rate/interfaces/exchange-rate';
-import { PriceResDto } from '../dto/res/price.res.dto';
-import { errorMessages } from '../../../common/constants/error-messages.constant';
-import { ExchangeRateEntity } from '../../../database/entities/exchange-rate.entity';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
+
+import { errorMessages } from '../../../common/constants/error-messages.constant';
+import { ECurrency } from '../../../database/entities/enums/currency.enum';
 import { PriceEntity } from '../../../database/entities/price.entity';
+import { PriceResDto } from '../../car/dto/res/price.res.dto';
+import { ExchangeRateResDto } from '../../exchange-rate/dto/res/exchange-rate.res.dto';
 
 @Injectable()
 export class PriceService {
-
   public async calculatePrices(
     enteredPrice: number,
     enteredCurrency: ECurrency,
-    exchangeRates: { rates: {usd: ExchangeRateEntity; eur: ExchangeRateEntity}}
+    exchangeRates: ExchangeRateResDto,
   ): Promise<PriceResDto[]> {
     try {
-     const {rates: {usd: usdRate, eur: eurRate}} = exchangeRates;
-
-      console.log('USD Rate:', usdRate);
-      console.log('EUR Rate:', eurRate);
+      const { usd: usdRate, eur: eurRate } = exchangeRates;
 
       let uah: PriceResDto;
       let eur: PriceResDto;
@@ -60,9 +60,7 @@ export class PriceService {
           };
           break;
         default:
-          throw new BadRequestException(
-            errorMessages.INVALID_CURRENCY_TYPE,
-          );
+          throw new BadRequestException(errorMessages.INVALID_CURRENCY_TYPE);
       }
       return [eur, usd, uah];
     } catch (e) {
@@ -71,8 +69,14 @@ export class PriceService {
       );
     }
   }
-  public async savePrices(prices: PriceResDto[], carId: string, repository: Repository<PriceEntity>): Promise<PriceEntity> {
-  const priceEntity = repository.create({car_id: carId});
+  public async savePrices(
+    prices: PriceResDto[],
+    carId: string,
+    repository: Repository<PriceEntity>,
+  ): Promise<PriceEntity> {
+    const priceEntity = repository.create({
+      car_id: carId,
+    });
 
     prices.forEach((price) => {
       switch (price.currency) {
@@ -86,7 +90,7 @@ export class PriceService {
           priceEntity.uah = price.value;
           break;
         default:
-          throw new BadRequestException(errorMessages.INVALID_CURRENCY_TYPE)
+          throw new BadRequestException(errorMessages.INVALID_CURRENCY_TYPE);
       }
     });
 

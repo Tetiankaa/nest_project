@@ -1,13 +1,13 @@
-import { Global, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class LoggerService {
   private readonly logger = new Logger();
 
   public log(message: string): void {
-      this.logger.log(message);
+    this.logger.log(message);
   }
   public error(error: any): void {
-      this.logger.error(error, error.stack);
+    this.logger.error(error, error.stack);
   }
 }

@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EUserRole } from '../../../../database/entities/enums/user-role.enum';
+
 import { EAccountType } from '../../../../database/entities/enums/account-type.enum';
+import { EUserRole } from '../../../../database/entities/enums/user-role.enum';
+import { DealershipResDto } from '../../../dealership/dto/res/dealership.res.dto';
+import { IsOptional } from 'class-validator';
 
 export class BaseUserResDto {
   @ApiProperty({
@@ -56,4 +59,12 @@ export class BaseUserResDto {
     description: 'The date and time when the user account was last updated.',
   })
   public readonly updatedAt: Date;
+
+  @ApiProperty({
+    type: DealershipResDto,
+    description: 'The dealership information associated with the user',
+    required: false,
+  })
+  @IsOptional()
+  public readonly dealership?: DealershipResDto;
 }

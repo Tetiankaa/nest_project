@@ -1,4 +1,4 @@
 export enum EAccountType {
-  BASIC = "BASIC",
-  PREMIUM = "PREMIUM",
+  BASIC = 'BASIC',
+  PREMIUM = 'PREMIUM',
 }

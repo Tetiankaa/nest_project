@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../../../../database/entities/user.entity';
-import { CarEntity } from '../../../../database/entities/car.entity';
+
 import { EPostStatus } from '../../../../database/entities/enums/post-status.enum';
+import { BaseCarResDto } from '../../../car/dto/res/base-car.res.dto';
 import { PrivateUserResDto } from '../../../user/dto/res/private-user-res.dto';
 import { PublicUserResDto } from '../../../user/dto/res/public-user-res.dto';
-import { BaseCarResDto } from '../../../car/dto/res/base-car.res.dto';
 
 export class BasePostResDto {
   @ApiProperty({
@@ -33,13 +32,13 @@ export class BasePostResDto {
 
   @ApiProperty({
     description: 'The user who created the post.',
-    type: UserEntity,
+    type: PrivateUserResDto,
   })
   public readonly user: PrivateUserResDto | PublicUserResDto;
 
   @ApiProperty({
     description: 'The car associated with the post.',
-    type: CarEntity,
+    type: BaseCarResDto,
   })
   public readonly car: BaseCarResDto;
 
@@ -52,7 +51,8 @@ export class BasePostResDto {
 
   @ApiProperty({
     example: 1,
-    description: 'The number of times profanity edits have been made to the post.',
+    description:
+      'The number of times profanity edits have been made to the post.',
   })
   public readonly profanityEdits: number;
 }

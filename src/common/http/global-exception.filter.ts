@@ -5,15 +5,15 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { LoggerService } from '../../modules/logger/logger.service';
-import { statusCodes } from '../constants/status-codes.constant';
+
+import { LoggerService } from '../../modules/logger/services/logger.service';
 import { errorMessages } from '../constants/error-messages.constant';
+import { statusCodes } from '../constants/status-codes.constant';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(
-    private readonly loggerService: LoggerService,
-  ) {}
+  constructor(private readonly loggerService: LoggerService) {}
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -27,7 +27,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       messages = (exception as HttpException).message;
     } else {
       status = statusCodes.INTERNAL_SERVER_ERROR;
-      messages =  errorMessages.INTERNAL_SERVER_ERROR;
+      messages = errorMessages.INTERNAL_SERVER_ERROR;
     }
 
     this.loggerService.error(exception);

@@ -1,19 +1,24 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from './configs/configs.type';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+
+import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/http/global-exception.filter';
-import { LoggerService } from './modules/logger/logger.service';
 import { createValidationExceptionFactory } from './common/validation/validation-exception.factory';
+import { AppConfig } from './configs/configs.type';
+import { CronService } from './modules/cron/services/cron.service';
+import { LoggerService } from './modules/logger/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-    const configService = app.get(ConfigService);
-    const appConfig = configService.get<AppConfig>('app');
+  const configService = app.get(ConfigService);
+  const appConfig = configService.get<AppConfig>('app');
 
-    app.useGlobalFilters(new GlobalExceptionFilter(new LoggerService))
+  const cronService = app.get(CronService);
+  await cronService.fetchExchangeRate();
+
+  app.useGlobalFilters(new GlobalExceptionFilter(new LoggerService()));
 
   const config = new DocumentBuilder()
     .setTitle('Autoria Clone')
@@ -26,7 +31,8 @@ async function bootstrap() {
       in: 'header',
     })
     .build();
-  const document: OpenAPIObject = SwaggerModule.createDocument(app, config); //Swagger documentation
+
+  const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
@@ -44,11 +50,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(appConfig.port,appConfig.host,()=>{
+  await app.listen(appConfig.port, appConfig.host, () => {
     console.log(`Server running on http://${appConfig.host}:${appConfig.port}`);
-    console.log(
-      `Swagger running at http://localhost:${appConfig.port}/docs`,
-    );
+    console.log(`Swagger running at http://localhost:${appConfig.port}/docs`);
   });
 }
 void bootstrap();

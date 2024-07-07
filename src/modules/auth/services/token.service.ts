@@ -1,14 +1,18 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { ActionTokenConfig, Configs, JWTConfig } from '../../../configs/configs.type';
+import { errorMessages } from '../../../common/constants/error-messages.constant';
+import {
+  ActionTokenConfig,
+  Configs,
+  JWTConfig,
+} from '../../../configs/configs.type';
+import { LoggerService } from '../../logger/services/logger.service';
+import { EActionTokenType } from '../enums/action-token-type.enum';
 import { TokenTypeEnum } from '../enums/token-type.enum';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { ITokenPair } from '../interfaces/token.interface';
-import { LoggerService } from '../../logger/logger.service';
-import { errorMessages } from '../../../common/constants/error-messages.constant';
-import { EActionTokenType } from '../enums/action-token-type.enum';
 
 @Injectable()
 export class TokenService {
@@ -17,10 +21,11 @@ export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<Configs>,
-    private readonly loggerService: LoggerService
+    private readonly loggerService: LoggerService,
   ) {
     this.jwtConfig = this.configService.get<JWTConfig>('jwt');
-    this.actionTokenConfig = this.configService.get<ActionTokenConfig>('actionToken');
+    this.actionTokenConfig =
+      this.configService.get<ActionTokenConfig>('actionToken');
   }
 
   public async generateTokenPair(payload: IJwtPayload): Promise<ITokenPair> {
@@ -44,7 +49,7 @@ export class TokenService {
         secret: this.getSecret(tokenType),
       })) as IJwtPayload;
     } catch (error) {
-      this.loggerService.error('Token verification error: ' + error)
+      this.loggerService.error('Token verification error: ' + error);
     }
   }
 
@@ -65,18 +70,25 @@ export class TokenService {
           secret = this.actionTokenConfig.forgot_password_secret;
           expiresIn = this.actionTokenConfig.forgot_password_expires_in;
           break;
+        case EActionTokenType.SETUP_DEALERSHIP_WORKER_PASSWORD:
+          secret = this.actionTokenConfig.setup_dealership_worker_secret;
+          expiresIn = this.actionTokenConfig.setup_dealership_worker_expires_in;
+          break;
         default:
-      throw new UnauthorizedException(errorMessages.INVALID_TOKEN_TYPE)
+          throw new UnauthorizedException(errorMessages.INVALID_TOKEN_TYPE);
       }
-      return await this.jwtService.signAsync(payload,{secret, expiresIn})
+      return await this.jwtService.signAsync(payload, { secret, expiresIn });
     } catch (e) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
   }
-  public async verifyActionToken(token: string, type: EActionTokenType): Promise<IJwtPayload> {
+  public async verifyActionToken(
+    token: string,
+    type: EActionTokenType,
+  ): Promise<IJwtPayload> {
     try {
-      let secret = this.getActionSecret(type);
-      return await this.jwtService.verify(token, {secret}) as IJwtPayload;
+      const secret = this.getActionSecret(type);
+      return (await this.jwtService.verify(token, { secret })) as IJwtPayload;
     } catch (e) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
@@ -108,10 +120,11 @@ export class TokenService {
       case EActionTokenType.FORGOT_PASSWORD:
         secret = this.actionTokenConfig.forgot_password_secret;
         break;
+      case EActionTokenType.SETUP_DEALERSHIP_WORKER_PASSWORD:
+        secret = this.actionTokenConfig.setup_dealership_worker_secret;
+        break;
       default:
-        throw new UnauthorizedException(
-          errorMessages.WRONG_TOKEN_TYPE,
-        );
+        throw new UnauthorizedException(errorMessages.WRONG_TOKEN_TYPE);
     }
     return secret;
   }

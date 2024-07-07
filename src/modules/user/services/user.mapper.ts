@@ -1,5 +1,5 @@
-import { ConfigStaticService } from '../../../configs/config.static';
 import { UserEntity } from '../../../database/entities/user.entity';
+import { DealershipMapper } from '../../dealership/services/dealership.mapper';
 import { PrivateUserResDto } from '../dto/res/private-user-res.dto';
 import { PublicUserResDto } from '../dto/res/public-user-res.dto';
 
@@ -10,11 +10,14 @@ export class UserMapper {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-       phone: user.phone,
+      phone: user.phone,
       role: user.role,
       accountType: user.account_type,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
+      dealership: user.dealership
+        ? DealershipMapper.toDto(user.dealership)
+        : undefined,
     };
   }
 
@@ -25,7 +28,10 @@ export class UserMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      dealership: user.dealership
+        ? DealershipMapper.toDto(user.dealership)
+        : undefined,
     };
   }
 }

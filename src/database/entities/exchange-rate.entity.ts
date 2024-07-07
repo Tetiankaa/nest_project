@@ -1,12 +1,12 @@
 import { Column, Entity } from 'typeorm';
+
+import { ECurrency } from './enums/currency.enum';
 import { ETableName } from './enums/table-name.enum';
 import { BaseModel } from './models/base.model';
-import { ECurrency } from './enums/currency.enum';
-import { Type } from 'class-transformer';
 
-@Entity({name: ETableName.EXCHANGE_RATES})
+@Entity({ name: ETableName.EXCHANGE_RATES })
 export class ExchangeRateEntity extends BaseModel {
-  @Column({type:'enum', enum: ECurrency})
+  @Column({ type: 'enum', enum: ECurrency })
   ccy: ECurrency;
 
   @Column('text')
@@ -17,5 +17,4 @@ export class ExchangeRateEntity extends BaseModel {
 
   @Column('float')
   sale: number;
-
 }

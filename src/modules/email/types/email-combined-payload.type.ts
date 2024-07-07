@@ -11,4 +11,6 @@ export type EmailCombinedPayloadType = {
   submissionDate?: string;
   actionToken?: string;
   frontUrl?: string;
+  company_name?: string;
+  user_role?: string;
 };

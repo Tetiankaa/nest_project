@@ -5,9 +5,10 @@ export type Configs = {
   jwt: JWTConfig;
   aws: AWSConfig;
   security: SecurityConfig;
-  sendGrid: SendGridConfig,
-  actionToken: ActionTokenConfig,
-  exchangeRates: ExchangeRatesConfig
+  sendGrid: SendGridConfig;
+  actionToken: ActionTokenConfig;
+  exchangeRates: ExchangeRatesConfig;
+  operations: OperationsConfig;
 };
 
 export type AppConfig = {
@@ -43,21 +44,28 @@ export type AWSConfig = {
 export type SecurityConfig = {
   hashPasswordRounds: number;
   defaultManagerPassword: string;
+  defaultDealershipWorkerPassword: string;
   admin_email: string;
   manager_email: string;
-  max_profanity_edits:number;
+  max_profanity_edits: number;
+  max_upload_images: number;
 };
 export type SendGridConfig = {
   api_key: string;
   front_url: string;
   from_email: string;
-}
+};
 export type ActionTokenConfig = {
   setup_manager_secret: string;
   setup_manager_expires_in: string;
   forgot_password_secret: string;
   forgot_password_expires_in: string;
-}
+  setup_dealership_worker_secret: string;
+  setup_dealership_worker_expires_in: string;
+};
 export type ExchangeRatesConfig = {
   api_privatbank: string;
-}
+};
+export type OperationsConfig = {
+  batch_size: number;
+};

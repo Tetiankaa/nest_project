@@ -1,3 +1,3 @@
 export const SKIP_AUTH = 'SKIP_AUTH';
 export const ACTION_TOKEN_TYPE = 'ACTION_TOKEN_TYPE';
-export const ADMIN_OR_MANAGER = 'ADMIN_OR_MANAGER';
+export const ROLES = 'ROLES';

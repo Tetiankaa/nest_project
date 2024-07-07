@@ -6,3 +6,4 @@ export interface IExchangeRate {
   buy: number;
   sale: number;
 }
+

@@ -9,7 +9,7 @@ export class ModelMapper {
     };
   }
 
- public static toListDto(models: ModelEntity[]): ModelResDto[] {
-    return models.map(model => this.toDto(model));
+  public static toListDto(models: ModelEntity[]): ModelResDto[] {
+    return models.map((model) => this.toDto(model));
   }
 }
