@@ -1,4 +1,22 @@
+# Autoria Clone 
+It`s a web application designed for the sale of cars, providing an API that supports comprehensive functionalities for managing car listings, user interactions, and administrative oversight. 
 
+## Key Features
+1. User Authentication and Authorization: Implements JWT-based authentication, with role-based access control for different types of users 
+2. Post Management: Allows users to create, update, delete, and retrieve car listings. Includes features for viewing and archiving posts.
+3. Image Upload and Management: Supports uploading multiple images for each car listing and managing (deleting) those images.
+4. Swagger API Documentation: Comprehensive API documentation available via Swagger, providing an easy way to explore and test the API endpoints.
+5. Validation and Error Handling: Ensures data integrity and security with input validation and global exception filters.
+
+## Technologies Used
+- NestJS
+- TypeORM
+- PostgreSQL
+- TypeScript
+- JWT
+- Redis
+- SendGrid
+  
 # Project Setup Instructions
 
 ## Prerequisites
